@@ -1,0 +1,12 @@
+/* CSS RESET: use box-sizing model; remove default margin & form typography styles; */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+input, button, textarea, select { font: inherit; }
+/* imported google fonts examples */
+/* .roboto { font-family: "Roboto"; font-weight: 400,500; font-style: normal; } */
+/* variables---------------------------------------------------------------- */
+:root{
+  
+}
+
+/* main CSS */
