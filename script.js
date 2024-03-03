@@ -5,7 +5,7 @@ const gameboard = ( ()=> {
   const boardArr = new Array(9).fill(null);
   // [ boardArr[2], boardArr[5], boardArr[8] ]=['O','O','O']; //test using destructuring assignment
 
-  const getBoardArr = ()=> boardArr;
+  const getBoardArr = ()=> boardArr;//for dev
 
   const getCheckLines = ()=> {
     return {
@@ -56,8 +56,10 @@ const gameboard = ( ()=> {
     }
   }
 
-  //public exposure object, will reference closure scope
-  return {getBoardArr, updateDisplay, markBoard, clearBoard, checkForWinner};
+  //development public exposure object, will reference closure scope
+  // return {getBoardArr, updateDisplay, markBoard, clearBoard, checkForWinner, getCheckLines};
+  //release public exposure object
+  return { markBoard, clearBoard, checkForWinner };
 })();
 
 //player objects factory function. make player objects from an start button event handler.
@@ -76,7 +78,8 @@ const gameFlow = ( ()=> {
   const messageBox = document.querySelector('#messageBox');
   const startBtn = document.querySelector('#start');
   const restartBtn = document.querySelector('#restart');
-  let playerX, playerO, currentPlayer, lastMark, round;
+  let playerX, playerO, currentPlayer;
+  let totalMarks = 0;
   //allow listener removal via the single-use AbortController AbortSignal object
   let controller = new AbortController();
 
@@ -86,12 +89,17 @@ const gameFlow = ( ()=> {
     //gameBoard listener for cell clicks
     document.querySelector('#gameBoard').addEventListener('click', e=>{
       e.stopPropagation;
+      //return early if board is full, otherwise increase mark counter and mark board
+      if (totalMarks >8){ return };
+      totalMarks++;
       if (e.target.className === 'boardCell'){
         currentPlayer = currentPlayer === playerO ? playerX : playerO; //switch last player before marking
         gameboard.markBoard(e.target.dataset.cell, currentPlayer.marker)
+        //tie check, overwritten later if there is a winner
+        if (totalMarks === 9) { messageBox.textContent = `Tie Game!`; }
         const result = gameboard.checkForWinner();
         if (result){ //truthy value means result obj with winner came back
-          messageBox.textContent = `${result.winner === 'X' ? playerX.name: playerO.name} wins! __line key: ${result.line}`;
+          messageBox.textContent = `${result.winner === 'X' ? playerX.name: playerO.name} wins! ___line key: ${result.line}`;
           //handle win: remove this listener, restart button handles rest
           controller.abort();
         }
@@ -119,6 +127,7 @@ const gameFlow = ( ()=> {
     //clear board to restart game. extra code is to disable gameboard and clear names
     if (e.target.id === 'restart'){
       controller.abort();//need to abort or else listener on #gameBoard will get called twice!
+      totalMarks = 0; //reset before allowing clicks again
       gameboard.clearBoard();
       setPlayerNames();
       messageBox.textContent = `${playerX.name} goes first!`
@@ -137,4 +146,4 @@ const gameFlow = ( ()=> {
 
 })();
 
-//todo: add a counter system to handle ties and block board from listening, handle glitch where clicking same space allows turn skip
+//todo: handle glitch where clicking same space allows turn skip
