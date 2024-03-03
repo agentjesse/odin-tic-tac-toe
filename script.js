@@ -33,7 +33,7 @@ const gameboard = ( ()=> {
     if (!boardArr[cellIndex]){//only mark if cell is empty
       boardArr[cellIndex] = marker;
       updateDisplay();
-      console.log('current boardArr: ',boardArr);//for debugging
+      // console.log('current boardArr: ',boardArr);//for debugging
     }else {
       console.log('oops, cell occupied');
     }
@@ -98,7 +98,7 @@ const gameFlow = ( ()=> {
         if (totalMarks === 9) { messageBox.textContent = `Tie Game!`; }
         const result = gameboard.checkForWinner();
         if (result){ //truthy value means result obj with winner came back
-          messageBox.textContent = `${result.winner === 'X' ? playerX.name: playerO.name} wins! ___line key: ${result.line}`;
+          messageBox.textContent = `${result.winner === 'X' ? playerX.name: playerO.name} wins!`;
           //handle win: remove this listener, restart button handles rest
           controller.abort();
         }
