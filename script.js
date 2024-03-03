@@ -57,7 +57,7 @@ const gameboard = ( ()=> {
   }
 
   //public exposure object, will reference closure scope
-  return {getBoardArr, updateDisplay, markBoard, clearBoard, checkForWinner, getCheckLines};
+  return {getBoardArr, markBoard, clearBoard, checkForWinner};
 })();
 
 //player objects factory function. make player objects from an start button event handler.

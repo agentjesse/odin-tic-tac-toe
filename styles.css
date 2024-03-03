@@ -37,6 +37,7 @@ body{
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 0.125rem;
       input{
         width: max(8rem,47%);
         border-radius: 2px;
