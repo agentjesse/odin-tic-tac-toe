@@ -1,7 +1,7 @@
 //gameboard object: have state of board(x's and o's) in an array. 
 //public functions: get board state array for analyzing; get 3 in a row lines as
 //strings to check them; update display using state array; mark board state
-//array with index and mark, then update display
+//array with index and mark, then update display; clear the board
 const gameboard = ( ()=> {
   //make array of 9 zero-indexed elements, every three represents a row.
   const boardArr = new Array(9).fill(null);
@@ -42,8 +42,12 @@ const gameboard = ( ()=> {
     }
   }
 
+  const clearBoard = ()=> {
+    
+  }
+
   //public exposure object, will reference closure scope
-  return {getBoardArr, getCheckLines, updateDisplay, markBoard};
+  return {getBoardArr, getCheckLines, updateDisplay, markBoard, clearBoard};
 })();
 
 //player objects factory function. make player objects from an event handler
@@ -73,6 +77,41 @@ const player = (name, marker)=> {
 
 //game flow object: 1. logic will be in this object to start the game, event listeners will check for wins/ties 
 const gameFlow = ( ()=> {
-  // console.log( 'gameFlow object created')
+  //local vars
+  const xNameInput = document.querySelector('#xName');
+  const oNameInput = document.querySelector('#oName');
+  let playerX, playerO;
+  //listener removal logic, uses controller
+  const controller = new AbortController();
+  const signal = controller.signal; //get AbortSignal object from controller
+
+  const enableGameboard = ()=> {
+    //gameBoard listener for cell clicks
+    document.querySelector('#gameBoard').addEventListener('click', e=>{
+      e.stopPropagation;
+      if (e.target.className === 'boardCell'){
+        gameboard.markBoard(e.target.dataset.cell, playerX.marker)//mark board, using playerX for testing
+        
+      }
+    },{signal}); //pass in AbortSignal object via options obj to remove this listener
+  }
   
+  //listener for buttons
+  document.querySelector('.namesAndButtonsWrapper').addEventListener('click', e=>{ //uses bubbling
+    e.stopPropagation;
+    //handle button clicks
+    if (e.target.id === 'start'){
+      playerX = player(xNameInput.value ? xNameInput.value : 'Player X','X');
+      playerO = player(oNameInput.value ? oNameInput.value : 'Player O','O');
+      enableGameboard();
+    }
+    //clear name fields and board, disable gameboard
+    if (e.target.id === 'restart'){
+      xNameInput.value = '';
+      oNameInput.value = '';
+      controller.abort();
+    }
+  });
+  
+
 })();
