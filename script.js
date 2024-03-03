@@ -1,12 +1,14 @@
-//gameboard object: have state of board(x's and o's) in an array. public functions to: 1.set 
-//the state array 2. get array of state of all the possible three-in-a-rows lines
-const gameboardModule = (function () {
-  //array of 9 0-indexed elements, every three represents a row.
+//gameboard object: have state of board(x's and o's) in an array. 
+//public functions: get board state array for analyzing; get 3 in a row lines as
+//strings to check them; update display using state array; mark board state
+//array with index and mark, then update display
+const gameboard = ( ()=> {
+  //make array of 9 zero-indexed elements, every three represents a row.
   const boardArr = new Array(9).fill(null);
-  [ boardArr[0], boardArr[3], boardArr[6] ]=['X','X','X']; //test using destructuring assignment
-  const logBoardArr = ()=> console.log(boardArr); //for debugging
+  // [ boardArr[0], boardArr[3], boardArr[6] ]=['X','X','X']; //test using destructuring assignment
 
-  //return object with strings of X's and O's explaining each check line
+  const getBoardArr = ()=> boardArr;
+
   const getCheckLines = ()=> {
     return {
       row1: [boardArr[0],boardArr[1],boardArr[2]].join(''),
@@ -22,32 +24,55 @@ const gameboardModule = (function () {
     }
   };
 
-  const markBoard = (boardIndex, marker)=> {
-    boardArr[boardIndex] = marker;
-    console.log(boardArr)
-  };
+  const updateDisplay = ()=> {
+    boardArr.forEach( (item,i)=> {
+      if (item){ //skip empty spots
+        document.querySelector(`[data-cell='${i}']`).textContent = `${item}`;
+      }
+    });
+  }
+
+  const markBoard = (cellIndex, marker)=> {
+    if (!boardArr[cellIndex]){//only mark if cell is empty
+      boardArr[cellIndex] = marker;
+      updateDisplay();
+      console.log(boardArr);
+    }else {
+      console.log('oops, cell occupied');
+    }
+  }
 
   //public exposure object, will reference closure scope
-  return {getCheckLines, markBoard, logBoardArr};
+  return {getBoardArr, getCheckLines, updateDisplay, markBoard};
 })();
 
+//player objects factory function. make player objects from an event handler
+const player = (name, marker)=> {
+  let wins = 0;
+  let ties = 0;
+  //getter and setter functions use closure to allow for private variables
+  const setWin = ()=> { wins++ }
+  const getWins = ()=> wins;
+  const setTie = ()=> { ties++ }
+  const getTies = ()=> ties;
+  return {
+    name,
+    marker,
+    setWin,
+    setTie,
+    getWins,
+    getTies,
+  }
+}
 
-//module with closure example
-// const pebblesModule = (function () {
-//   let pebbles = 1;
-//   const plusPebbles = ()=> {
-//     pebbles++
-//     console.log('pebble added')
-//   }
-//   const getPebbles = ()=> {
-//     return pebbles;
-//   }
-//   return {getPebbles, plusPebbles};
-// })();
 
-//player objects: each object will store name of each player per object and 
-//their marker (X/O). create these objects from press of a start button which 
-//should call this factory function
+//usage
+// const billy = player('Billy','O')
+// billy.setWin()
+// console.log(billy.getWins())
 
-//game flow object: 1. logic will be in this object to check for wins/ties 
-//2. display update logic will be here with most event handlers. 
+//game flow object: 1. logic will be in this object to start the game, event listeners will check for wins/ties 
+const gameFlow = ( ()=> {
+  // console.log( 'gameFlow object created')
+  
+})();

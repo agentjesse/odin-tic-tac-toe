@@ -6,7 +6,55 @@ input, button, textarea, select { font: inherit; }
 /* .roboto { font-family: "Roboto"; font-weight: 400,500; font-style: normal; } */
 /* variables---------------------------------------------------------------- */
 :root{
-  
+  /* hsl version of tailwind CSS Sky Palette */
+  --bg950: hsl(204 80% 16%);
+  --bg900: hsl(202, 80%, 24%);
+  --fg200: hsl(201, 94%, 86%);
+  --fg50: hsl(204 100% 97%);
+
+  /* base font, user agent stylesheet overwrite this */
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: 16px; /*chrome default*/
 }
 
 /* main CSS */
+body{
+  background-color: var(--bg950);
+  h1{
+    color: var(--fg50);
+    font-weight: 400;
+    text-align: center;
+  }
+  .namesAndButtonsWrapper{
+    color: var(--fg200);
+    display: grid;
+    grid-template: 1fr 1fr / 1fr 1fr;
+    label{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      input{
+        width: max(8rem,47%);
+      }
+    }
+  }
+}
+#boardWrapper{
+  background-color: var(--bg900);
+  #gameBoard{
+    margin: 0 auto;
+    width: 15.5rem;
+    height: 15.5rem;
+    display: grid;
+    grid-template: repeat(3,1fr) / repeat(3,1fr);
+    gap: 0.125rem;
+    .boardCell{
+      background-color: var(--fg200);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+    }
+  }
+}

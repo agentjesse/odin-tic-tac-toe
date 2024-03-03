@@ -13,8 +13,33 @@
   <script src="./script.js" defer></script>
 </head>
 <body>
-  
-open console
+  <h1>Tic Tac Toe</h1>
+
+  <div id="boardWrapper">
+    <div id="gameBoard">
+      <!--emmet: .boardCell[data-cell=$]*8 -->
+      <div class="boardCell" data-cell="0"></div>
+      <div class="boardCell" data-cell="1"></div>
+      <div class="boardCell" data-cell="2"></div>
+      <div class="boardCell" data-cell="3"></div>
+      <div class="boardCell" data-cell="4"></div>
+      <div class="boardCell" data-cell="5"></div>
+      <div class="boardCell" data-cell="6"></div>
+      <div class="boardCell" data-cell="7"></div>
+      <div class="boardCell" data-cell="8"></div>
+    </div>
+  </div>
+
+  <div class="namesAndButtonsWrapper">
+    <label>X Player's name:
+      <input id='xName' type="text">
+    </label>
+    <label>O Player's name:
+      <input id='oName' type="text">
+    </label>
+    <button id="start">Start</button>
+    <button id="restart">Restart</button>
+  </div>
 
 </body>
 </html>
