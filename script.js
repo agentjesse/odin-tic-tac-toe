@@ -101,6 +101,8 @@ const gameFlow = ( ()=> {
     document.querySelector('#gameBoard').addEventListener('click', e=>{
       e.stopPropagation;
       if (e.target.className === 'boardCell'){
+        //before marking board, switch last player
+        currentPlayer = currentPlayer === playerO ? playerX : playerO;
         gameboard.markBoard(e.target.dataset.cell, currentPlayer.marker)//mark board, using playerX for testing
         const result = gameboard.checkForWinner();
         if (result){ //truthy value means result obj with winner came back
@@ -115,13 +117,13 @@ const gameFlow = ( ()=> {
     e.stopPropagation;
     //handle button clicks
     if (e.target.id === 'start'){
-      //handle empty name fields first
+      //handle empty name fields first, then make player objects
       xNameInput.value = xNameInput.value ? xNameInput.value : 'Player 1';
       oNameInput.value = oNameInput.value ? oNameInput.value : 'Player 2';
       playerX = player(xNameInput.value,'X');
-      currentPlayer = playerX;
-      messageBox.textContent = `${currentPlayer.name} goes first!`
       playerO = player(oNameInput.value,'O');
+      messageBox.textContent = `${playerX.name} goes first!`
+      currentPlayer = playerO; //#gameBoard listener switches player before calling markBoard, set opposite
       enableGameboard();
     }
     //clear board to restart game. extra code is to disable gameboard and clear names
