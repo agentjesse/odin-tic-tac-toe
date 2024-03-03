@@ -76,7 +76,7 @@ const gameFlow = ( ()=> {
   const messageBox = document.querySelector('#messageBox');
   const startBtn = document.querySelector('#start');
   const restartBtn = document.querySelector('#restart');
-  let playerX, playerO, currentPlayer, lastMark;
+  let playerX, playerO, currentPlayer, lastMark, round;
   //allow listener removal via the single-use AbortController AbortSignal object
   let controller = new AbortController();
 
@@ -118,7 +118,7 @@ const gameFlow = ( ()=> {
     }
     //clear board to restart game. extra code is to disable gameboard and clear names
     if (e.target.id === 'restart'){
-      controller.abort();
+      controller.abort();//need to abort or else listener on #gameBoard will get called twice!
       gameboard.clearBoard();
       setPlayerNames();
       messageBox.textContent = `${playerX.name} goes first!`
@@ -136,3 +136,5 @@ const gameFlow = ( ()=> {
   }
 
 })();
+
+//todo: add a counter system to handle ties and block board from listening, handle glitch where clicking same space allows turn skip
