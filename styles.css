@@ -9,6 +9,7 @@ input, button, textarea, select { font: inherit; }
   /* hsl version of tailwind CSS Sky Palette */
   --bg950: hsl(204 80% 16%);
   --bg900: hsl(202, 80%, 24%);
+  --fg400: hsl(215, 20%, 65%);
   --fg200: hsl(201, 94%, 86%);
   --fg50: hsl(204 100% 97%);
 
@@ -48,6 +49,13 @@ body{
       border-style: none;
       background-color: var(--fg50);
     }
+  }
+  #messageBox{
+    height: 2rem;
+    font-size: 1.25rem;
+    padding: 0.25rem;
+    color: var(--bg900);
+    background-color: var(--fg400);
   }
 }
 #boardWrapper{
