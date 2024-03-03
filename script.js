@@ -1,11 +1,11 @@
 //gameboard object: have state of board(x's and o's) in an array. 
-//public functions: get board state array for analyzing; update display using state array; mark board state array with index and mark, then update display; clear the board; check board and return a result obj
+//public functions: get board state array; update display using state array; mark board state array with index and mark, then update display; clear the board; check board lines and return a result obj
 const gameboard = ( ()=> {
   //make array of 9 zero-indexed elements, every three represents a row.
   const boardArr = new Array(9).fill(null);
   // [ boardArr[2], boardArr[5], boardArr[8] ]=['O','O','O']; //test using destructuring assignment
 
-  const getBoardArr = ()=> boardArr;//for dev
+  const getBoardArr = ()=> boardArr;
 
   const getCheckLines = ()=> {
     return {
@@ -56,10 +56,8 @@ const gameboard = ( ()=> {
     }
   }
 
-  //development public exposure object, will reference closure scope
-  // return {getBoardArr, updateDisplay, markBoard, clearBoard, checkForWinner, getCheckLines};
-  //release public exposure object
-  return { markBoard, clearBoard, checkForWinner };
+  //public exposure object, will reference closure scope
+  return {getBoardArr, updateDisplay, markBoard, clearBoard, checkForWinner, getCheckLines};
 })();
 
 //player objects factory function. make player objects from an start button event handler.
@@ -89,10 +87,11 @@ const gameFlow = ( ()=> {
     //gameBoard listener for cell clicks
     document.querySelector('#gameBoard').addEventListener('click', e=>{
       e.stopPropagation;
-      //return early if board is full, otherwise increase mark counter and mark board
-      if (totalMarks >8){ return };
-      totalMarks++;
+      if (totalMarks >8){ return }; //return early if board is full
       if (e.target.className === 'boardCell'){
+        //prevent marking if the last click was on a filled space. that's bad since it skips a turn.
+        if ( gameboard.getBoardArr()[e.target.dataset.cell] ){ return }
+        totalMarks++;//increase mark count only after confirming cell was valid to mark
         currentPlayer = currentPlayer === playerO ? playerX : playerO; //switch last player before marking
         gameboard.markBoard(e.target.dataset.cell, currentPlayer.marker)
         //tie check, overwritten later if there is a winner
@@ -146,4 +145,3 @@ const gameFlow = ( ()=> {
 
 })();
 
-//todo: handle glitch where clicking same space allows turn skip
