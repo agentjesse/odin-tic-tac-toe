@@ -91,7 +91,7 @@ const gameFlow = ( ()=> {
       e.stopPropagation;
       if (e.target.className === 'boardCell'){
         gameboard.markBoard(e.target.dataset.cell, playerX.marker)//mark board, using playerX for testing
-
+        
       }
     },{signal:controller.signal}); //providing an AbortSignal object allows removal of this listener
   }
@@ -101,15 +101,18 @@ const gameFlow = ( ()=> {
     e.stopPropagation;
     //handle button clicks
     if (e.target.id === 'start'){
-      playerX = player(xNameInput.value ? xNameInput.value : 'Player X','X');
-      playerO = player(oNameInput.value ? oNameInput.value : 'Player O','O');
+      //handle empty name fields first
+      xNameInput.value = xNameInput.value ? xNameInput.value : 'Player 1';
+      oNameInput.value = oNameInput.value ? oNameInput.value : 'Player 2';
+      playerX = player(xNameInput.value,'X');
+      playerO = player(oNameInput.value,'O');
       enableGameboard();
     }
     //clear name fields and board, disable gameboard
     if (e.target.id === 'restart'){
       gameboard.clearBoard();
-      // [ xNameInput.value, oNameInput.value ] = ['','']; //fancy assignment, not used for now
-      // controller.abort(); //not using for now, just example
+      // [ xNameInput.value, oNameInput.value ] = ['','']; //fancy assignment example
+      // controller.abort(); //not using for now, just for listener removal example
     }
   });
   
