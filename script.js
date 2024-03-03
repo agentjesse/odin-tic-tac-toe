@@ -78,7 +78,7 @@ const gameFlow = ( ()=> {
   //local vars
   const xNameInput = document.querySelector('#xName');
   const oNameInput = document.querySelector('#oName');
-  let playerX, playerO;
+  let playerX, playerO, currentPlayer;
   //***ABORT CONTROLLER IS NOT BEING USED*** KEPT JUST FOR LEARNING PURPOSES.**
   //allow listener removal via the single-use AbortController AbortSignal object
   let controller = new AbortController();
@@ -90,7 +90,7 @@ const gameFlow = ( ()=> {
     document.querySelector('#gameBoard').addEventListener('click', e=>{
       e.stopPropagation;
       if (e.target.className === 'boardCell'){
-        gameboard.markBoard(e.target.dataset.cell, playerX.marker)//mark board, using playerX for testing
+        gameboard.markBoard(e.target.dataset.cell, currentPlayer.marker)//mark board, using playerX for testing
         
       }
     },{signal:controller.signal}); //providing an AbortSignal object allows removal of this listener
@@ -105,6 +105,8 @@ const gameFlow = ( ()=> {
       xNameInput.value = xNameInput.value ? xNameInput.value : 'Player 1';
       oNameInput.value = oNameInput.value ? oNameInput.value : 'Player 2';
       playerX = player(xNameInput.value,'X');
+      currentPlayer = playerX;
+      console.log(`${currentPlayer.name} goes first!`)
       playerO = player(oNameInput.value,'O');
       enableGameboard();
     }

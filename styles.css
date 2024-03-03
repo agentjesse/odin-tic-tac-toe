@@ -38,6 +38,16 @@ body{
         width: max(8rem,47%);
       }
     }
+    button{
+      place-self: center;
+      font-size: 1.5rem;
+      color: var(--bg950);
+      padding: 0.25rem 0.5rem;
+      width: 90%;
+      border-radius: 16px;
+      border-style: none;
+      background-color: var(--fg50);
+    }
   }
 }
 #boardWrapper{
