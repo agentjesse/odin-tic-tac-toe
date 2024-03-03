@@ -95,5 +95,8 @@ body{
       font-size: 3rem;
       box-shadow: 0px 0px 7px inset var(--bg950);
     }
+    .boardCell:hover{
+      background-color: var(--fg50);
+    }
   }
 }
