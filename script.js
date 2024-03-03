@@ -25,10 +25,9 @@ const gameboard = ( ()=> {
   };
 
   const updateDisplay = ()=> {
+    // set cell data to boardArr data
     boardArr.forEach( (item,i)=> {
-      if (item){ //skip empty spots
-        document.querySelector(`[data-cell='${i}']`).textContent = `${item}`;
-      }
+        document.querySelector(`[data-cell='${i}']`).textContent = `${item ? item : ''}`;
     });
   }
 
@@ -43,33 +42,32 @@ const gameboard = ( ()=> {
   }
 
   const clearBoard = ()=> {
-    
+    boardArr.fill(null);
+    updateDisplay();
   }
 
   //public exposure object, will reference closure scope
   return {getBoardArr, getCheckLines, updateDisplay, markBoard, clearBoard};
 })();
 
-//player objects factory function. make player objects from an event handler
+//player objects factory function. make player objects from an event handler. commented code is just for closure learning purposes, i.e. private variables example.
 const player = (name, marker)=> {
-  let wins = 0;
-  let ties = 0;
+  // let wins = 0;
+  // let ties = 0;
   //getter and setter functions use closure to allow for private variables
-  const setWin = ()=> { wins++ }
-  const getWins = ()=> wins;
-  const setTie = ()=> { ties++ }
-  const getTies = ()=> ties;
+  // const setWin = ()=> { wins++ }
+  // const getWins = ()=> wins;
+  // const setTie = ()=> { ties++ }
+  // const getTies = ()=> ties;
   return {
     name,
     marker,
-    setWin,
-    setTie,
-    getWins,
-    getTies,
+    // setWin,
+    // setTie,
+    // getWins,
+    // getTies,
   }
 }
-
-
 //usage
 // const billy = player('Billy','O')
 // billy.setWin()
@@ -81,19 +79,21 @@ const gameFlow = ( ()=> {
   const xNameInput = document.querySelector('#xName');
   const oNameInput = document.querySelector('#oName');
   let playerX, playerO;
-  //listener removal logic, uses controller
-  const controller = new AbortController();
-  const signal = controller.signal; //get AbortSignal object from controller
+  //***ABORT CONTROLLER IS NOT BEING USED*** KEPT JUST FOR LEARNING PURPOSES.**
+  //allow listener removal via the single-use AbortController AbortSignal object
+  let controller = new AbortController();
 
   const enableGameboard = ()=> {
+    //if needed, make a new AbortController object to reenable the event listener after aborting it previously. aborted is a property of the AbortSignal object, accessible from the signal property.
+    if ( controller.signal.aborted ) { controller = new AbortController() }
     //gameBoard listener for cell clicks
     document.querySelector('#gameBoard').addEventListener('click', e=>{
       e.stopPropagation;
       if (e.target.className === 'boardCell'){
         gameboard.markBoard(e.target.dataset.cell, playerX.marker)//mark board, using playerX for testing
-        
+
       }
-    },{signal}); //pass in AbortSignal object via options obj to remove this listener
+    },{signal:controller.signal}); //providing an AbortSignal object allows removal of this listener
   }
   
   //listener for buttons
@@ -107,9 +107,9 @@ const gameFlow = ( ()=> {
     }
     //clear name fields and board, disable gameboard
     if (e.target.id === 'restart'){
-      xNameInput.value = '';
-      oNameInput.value = '';
-      controller.abort();
+      gameboard.clearBoard();
+      // [ xNameInput.value, oNameInput.value ] = ['','']; //fancy assignment, not used for now
+      // controller.abort(); //not using for now, just example
     }
   });
   
