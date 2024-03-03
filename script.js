@@ -92,10 +92,8 @@ const gameFlow = ( ()=> {
         const result = gameboard.checkForWinner();
         if (result){ //truthy value means result obj with winner came back
           messageBox.textContent = `${result.winner === 'X' ? playerX.name: playerO.name} wins! __line key: ${result.line}`;
-          //handle win: remove this listener, set buttons
+          //handle win: remove this listener, restart button handles rest
           controller.abort();
-          setPlayerNames();
-          restartBtn.disabled = false;
         }
       }
     },{signal:controller.signal}); //providing an AbortSignal object allows removal of this listener
@@ -116,15 +114,16 @@ const gameFlow = ( ()=> {
       currentPlayer = playerO; //#gameBoard listener switches player before calling markBoard, set opposite
       enableGameboard();
       startBtn.disabled = true; //no need to use anymore
+      restartBtn.disabled = false; //allow immediate name changes (error handling)
     }
     //clear board to restart game. extra code is to disable gameboard and clear names
     if (e.target.id === 'restart'){
+      controller.abort();
       gameboard.clearBoard();
       setPlayerNames();
       messageBox.textContent = `${playerX.name} goes first!`
       currentPlayer = playerO; //#gameBoard listener switches player before calling markBoard, set opposite
       enableGameboard();
-      // [ xNameInput.value, oNameInput.value ] = ['','']; //fancy assignment example
     }
   });
 

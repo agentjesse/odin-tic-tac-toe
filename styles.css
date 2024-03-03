@@ -31,12 +31,16 @@ body{
     color: var(--fg200);
     display: grid;
     grid-template: 1fr 1fr / 1fr 1fr;
+    margin: 0.5rem 0;
+    gap: 0.5rem;
     label{
       display: flex;
       flex-direction: column;
       align-items: center;
       input{
         width: max(8rem,47%);
+        border-radius: 2px;
+        border-style: none;
       }
     }
     button{
