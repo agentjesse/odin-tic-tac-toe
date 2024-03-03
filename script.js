@@ -60,28 +60,13 @@ const gameboard = ( ()=> {
   return {getBoardArr, updateDisplay, markBoard, clearBoard, checkForWinner};
 })();
 
-//player objects factory function. make player objects from an event handler. commented code is just for closure learning purposes, i.e. private variables example.
+//player objects factory function. make player objects from an start button event handler.
 const player = (name, marker)=> {
-  // let wins = 0;
-  // let ties = 0;
-  //getter and setter functions use closure to allow for private variables
-  // const setWin = ()=> { wins++ }
-  // const getWins = ()=> wins;
-  // const setTie = ()=> { ties++ }
-  // const getTies = ()=> ties;
-  return {
+  return { 
     name,
     marker,
-    // setWin,
-    // setTie,
-    // getWins,
-    // getTies,
   }
-}
-//usage
-// const billy = player('Billy','O')
-// billy.setWin()
-// console.log(billy.getWins())
+};
 
 //game flow object: 1. logic will be in this object to start the game, event listeners will check for wins/ties 
 const gameFlow = ( ()=> {
@@ -89,24 +74,28 @@ const gameFlow = ( ()=> {
   const xNameInput = document.querySelector('#xName');
   const oNameInput = document.querySelector('#oName');
   const messageBox = document.querySelector('#messageBox');
-  let playerX, playerO, currentPlayer;
-  //***ABORT CONTROLLER IS NOT BEING USED*** KEPT JUST FOR LEARNING PURPOSES.**
+  const startBtn = document.querySelector('#start');
+  const restartBtn = document.querySelector('#restart');
+  let playerX, playerO, currentPlayer, lastMark;
   //allow listener removal via the single-use AbortController AbortSignal object
   let controller = new AbortController();
 
   const enableGameboard = ()=> {
-    //if needed, make a new AbortController object to reenable the event listener after aborting it previously. aborted is a property of the AbortSignal object, accessible from the signal property.
+    //if needed, make a new AbortController object to reenable the event listener after aborting it previously. aborted property is a property of the AbortSignal object, which is accessible from the signal property of the controller.
     if ( controller.signal.aborted ) { controller = new AbortController() }
     //gameBoard listener for cell clicks
     document.querySelector('#gameBoard').addEventListener('click', e=>{
       e.stopPropagation;
       if (e.target.className === 'boardCell'){
-        //before marking board, switch last player
-        currentPlayer = currentPlayer === playerO ? playerX : playerO;
-        gameboard.markBoard(e.target.dataset.cell, currentPlayer.marker)//mark board, using playerX for testing
+        currentPlayer = currentPlayer === playerO ? playerX : playerO; //switch last player before marking
+        gameboard.markBoard(e.target.dataset.cell, currentPlayer.marker)
         const result = gameboard.checkForWinner();
         if (result){ //truthy value means result obj with winner came back
           messageBox.textContent = `${result.winner === 'X' ? playerX.name: playerO.name} wins! __line key: ${result.line}`;
+          //handle win: remove this listener, set buttons
+          controller.abort();
+          setPlayerNames();
+          restartBtn.disabled = false;
         }
       }
     },{signal:controller.signal}); //providing an AbortSignal object allows removal of this listener
@@ -117,22 +106,34 @@ const gameFlow = ( ()=> {
     e.stopPropagation;
     //handle button clicks
     if (e.target.id === 'start'){
-      //handle empty name fields first, then make player objects
+      //make players, handle empty name fields first.
       xNameInput.value = xNameInput.value ? xNameInput.value : 'Player 1';
       oNameInput.value = oNameInput.value ? oNameInput.value : 'Player 2';
       playerX = player(xNameInput.value,'X');
       playerO = player(oNameInput.value,'O');
+      //start with marker X player
       messageBox.textContent = `${playerX.name} goes first!`
       currentPlayer = playerO; //#gameBoard listener switches player before calling markBoard, set opposite
       enableGameboard();
+      startBtn.disabled = true; //no need to use anymore
     }
     //clear board to restart game. extra code is to disable gameboard and clear names
     if (e.target.id === 'restart'){
       gameboard.clearBoard();
+      setPlayerNames();
+      messageBox.textContent = `${playerX.name} goes first!`
+      currentPlayer = playerO; //#gameBoard listener switches player before calling markBoard, set opposite
+      enableGameboard();
       // [ xNameInput.value, oNameInput.value ] = ['','']; //fancy assignment example
-      // controller.abort(); //not using for now, just for listener removal example
     }
   });
-  
+
+  const setPlayerNames = ()=> {
+    //handle empty name fields (error handling) first, then set player objects
+    xNameInput.value = xNameInput.value ? xNameInput.value : 'Player 1';
+    oNameInput.value = oNameInput.value ? oNameInput.value : 'Player 2';
+    playerX.name = xNameInput.value;
+    playerO.name = oNameInput.value;
+  }
 
 })();

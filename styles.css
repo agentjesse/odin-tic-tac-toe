@@ -49,6 +49,10 @@ body{
       border-style: none;
       background-color: var(--fg50);
     }
+    [disabled]{
+      opacity: 0.1;
+      cursor: not-allowed;
+    }
   }
   #messageBox{
     height: 2rem;
